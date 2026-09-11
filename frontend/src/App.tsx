@@ -1,32 +1,42 @@
-import { useEffect, useState } from 'react'
-import { fetchProdutos } from './api/produtos'
-import type { Produto } from './types/produto'
+import { useState } from 'react'
+import { Header } from './components/Header/Header'
+import { MontadorHero } from './components/MontadorHero/MontadorHero'
+import { FiltroCategorias, CATEGORIA_TODOS } from './components/FiltroCategorias/FiltroCategorias'
+import { GridProdutos } from './components/GridProdutos/GridProdutos'
+import { CestasProntas } from './components/CestasProntas/CestasProntas'
+import { Sobre } from './components/Sobre/Sobre'
+import { Footer } from './components/Footer/Footer'
 
 function App() {
-  const [produtos, setProdutos] = useState<Produto[]>([])
-  const [erro, setErro] = useState<string | null>(null)
-
-  useEffect(() => {
-    fetchProdutos()
-      .then(setProdutos)
-      .catch((error: Error) => setErro(error.message))
-  }, [])
-
-  if (erro) {
-    return <p>Erro ao carregar produtos: {erro}</p>
-  }
+  const [categoriaAtiva, setCategoriaAtiva] = useState<string>(CATEGORIA_TODOS)
 
   return (
-    <div>
-      <h1>Catálogo Celebrar Confeitaria</h1>
-      <ul>
-        {produtos.map((produto) => (
-          <li key={produto.id}>
-            {produto.nome} - R$ {produto.preco.toFixed(2)}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      <Header />
+      <div className="wrap">
+        <MontadorHero />
+
+        <div className="sec">
+          <div className="sec-hd">
+            <h2>Nossos produtos</h2>
+            <span>Feito com carinho</span>
+          </div>
+        </div>
+        <FiltroCategorias ativo={categoriaAtiva} onChange={setCategoriaAtiva} />
+        <GridProdutos categoriaAtiva={categoriaAtiva} />
+
+        <div className="sec">
+          <div className="sec-hd">
+            <h2>Cestas prontas</h2>
+            <span>Já montadas por nós</span>
+          </div>
+        </div>
+        <CestasProntas />
+
+        <Sobre />
+      </div>
+      <Footer />
+    </>
   )
 }
 
